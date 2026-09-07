@@ -44,3 +44,23 @@ CREATE TABLE utente (
     ruolo               ENUM('REGISTRATO', 'ADMIN') NOT NULL DEFAULT 'REGISTRATO',
     data_registrazione  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- ---------------------------------------------------------
+-- TABELLA: prodotto
+-- Catalogo dei dispositivi medici in vendita
+-- cancellato = soft-delete: il prodotto sparisce dal
+-- catalogo ma rimane nei vecchi ordini (integrità storica)
+-- ---------------------------------------------------------
+CREATE TABLE prodotto (
+    id                   INT AUTO_INCREMENT PRIMARY KEY,
+    nome                 VARCHAR(150)   NOT NULL,
+    descrizione          TEXT,
+    prezzo               DECIMAL(10,2)  NOT NULL CHECK (prezzo >= 0),
+    quantita_disponibile INT            NOT NULL DEFAULT 0 CHECK (quantita_disponibile >= 0),
+    immagine             VARCHAR(255)   DEFAULT 'default.png',
+    id_categoria         INT            NOT NULL,
+    id_brand             INT            NOT NULL,
+    cancellato           BOOLEAN        NOT NULL DEFAULT FALSE,
+    FOREIGN KEY (id_categoria) REFERENCES categoria(id),
+    FOREIGN KEY (id_brand)     REFERENCES brand(id)
+);
