@@ -64,3 +64,17 @@ CREATE TABLE prodotto (
     FOREIGN KEY (id_categoria) REFERENCES categoria(id),
     FOREIGN KEY (id_brand)     REFERENCES brand(id)
 );
+
+-- ---------------------------------------------------------
+-- TABELLA: prodotto_compatibile
+-- Relazione molti-a-molti: quali prodotti sono compatibili
+-- tra loro (es. sensore CGM + patch adesive)
+-- La coppia (id_prodotto_1, id_prodotto_2) è la PK composita
+-- ---------------------------------------------------------
+CREATE TABLE prodotto_compatibile (
+    id_prodotto_1 INT NOT NULL,
+    id_prodotto_2 INT NOT NULL,
+    PRIMARY KEY (id_prodotto_1, id_prodotto_2),
+    FOREIGN KEY (id_prodotto_1) REFERENCES prodotto(id),
+    FOREIGN KEY (id_prodotto_2) REFERENCES prodotto(id)
+);
