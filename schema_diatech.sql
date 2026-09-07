@@ -26,3 +26,21 @@ CREATE TABLE brand (
     id   INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL
 );
+
+-- ---------------------------------------------------------
+-- TABELLA: utente
+-- Contiene sia i clienti registrati che gli amministratori
+-- ---------------------------------------------------------
+CREATE TABLE utente (
+    id                  INT AUTO_INCREMENT PRIMARY KEY,
+    nome                VARCHAR(100)  NOT NULL,
+    cognome             VARCHAR(100)  NOT NULL,
+    email               VARCHAR(150)  NOT NULL UNIQUE,
+    password_hash       VARCHAR(255)  NOT NULL,
+    indirizzo           VARCHAR(255),
+    citta               VARCHAR(100),
+    cap                 VARCHAR(10),
+    telefono            VARCHAR(20),
+    ruolo               ENUM('REGISTRATO', 'ADMIN') NOT NULL DEFAULT 'REGISTRATO',
+    data_registrazione  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
