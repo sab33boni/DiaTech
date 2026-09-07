@@ -1,0 +1,20 @@
+# File compilati Java
+build/
+*.class
+
+# Archivi di distribuzione
+*.war
+*.jar
+*.ear
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Log
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
