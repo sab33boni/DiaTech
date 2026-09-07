@@ -78,3 +78,27 @@ CREATE TABLE prodotto_compatibile (
     FOREIGN KEY (id_prodotto_1) REFERENCES prodotto(id),
     FOREIGN KEY (id_prodotto_2) REFERENCES prodotto(id)
 );
+
+-- ---------------------------------------------------------
+-- TABELLA: carrello
+-- Un carrello per ogni utente registrato.
+-- Gli utenti anonimi hanno il carrello solo in sessione HTTP
+-- ---------------------------------------------------------
+CREATE TABLE carrello (
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    id_utente  INT NOT NULL UNIQUE,
+    FOREIGN KEY (id_utente) REFERENCES utente(id) ON DELETE CASCADE
+);
+
+-- ---------------------------------------------------------
+-- TABELLA: riga_carrello
+-- Ogni riga rappresenta un prodotto nel carrello con quantità
+-- ---------------------------------------------------------
+CREATE TABLE riga_carrello (
+    id           INT AUTO_INCREMENT PRIMARY KEY,
+    id_carrello  INT NOT NULL,
+    id_prodotto  INT NOT NULL,
+    quantita     INT NOT NULL CHECK (quantita > 0),
+    FOREIGN KEY (id_carrello) REFERENCES carrello(id) ON DELETE CASCADE,
+    FOREIGN KEY (id_prodotto) REFERENCES prodotto(id)
+);
