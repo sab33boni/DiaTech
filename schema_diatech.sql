@@ -175,3 +175,38 @@ INSERT INTO brand (id, nome) VALUES
 (3, 'Ascensia'),
 (4, 'Menarini'),
 (5, 'Dexcom');
+
+-- ---------------------------------------------------------
+-- Prodotti del catalogo (14 articoli)
+-- id_categoria e id_brand fanno riferimento alle tabelle sopra
+-- cancellato = FALSE: tutti visibili nel catalogo
+-- ---------------------------------------------------------
+INSERT INTO prodotto (id, nome, descrizione, prezzo, quantita_disponibile, immagine, id_categoria, id_brand, cancellato) VALUES
+(1,  'FreeStyle Libre 2',          'Sensore CGM con allarmi in tempo reale. Durata 14 giorni, resistente acqua IP27.',                                    59.90,  45,  'freestyle_libre2.png',  1, 1, FALSE),
+(2,  'FreeStyle Libre 3',          'Il sensore CGM piu piccolo al mondo. Trasmette letture ogni minuto allo smartphone.',                                  64.90,  30,  'freestyle_libre3.png',  1, 1, FALSE),
+(3,  'Dexcom G7',                  'Sistema CGM all-in-one, riscaldamento in 30 minuti. Allarmi predittivi e multi-dispositivo.',                          72.50,  25,  'dexcom_g7.png',         1, 5, FALSE),
+(4,  'Accu-Chek Guide',            'Glucometro con porta strisce illuminata e rimozione automatica. Connessione Bluetooth a mySugr.',                      28.50,  50,  'accuchek_guide.png',    2, 2, FALSE),
+(5,  'GlucoMen Areo 2k',           'Glucometro con NFC e misurazione combinata di glicemia e chetoni ematici.',                                            32.00,  40,  'glucomen_areo.png',     2, 4, FALSE),
+(6,  'Contour Next',               'Glucometro con tecnologia Second-Chance sampling: riapplica il sangue sulla stessa striscia.',                         24.90,  35,  'contour_next.png',      2, 3, FALSE),
+(7,  'Accu-Chek Guide Strisce 50', 'Strisce reattive con area di aspirazione estesa. Solo per glucometro Accu-Chek Guide.',                               18.90, 100,  'accuchek_strisce.png',  3, 2, FALSE),
+(8,  'GlucoMen Areo Strisce 50',   'Strisce reattive ad alta specificita elettrochimica per glucometro GlucoMen Areo.',                                    19.50,  80,  'glucomen_strisce.png',  3, 4, FALSE),
+(9,  'Contour Next Strisce 50',    'Strisce reattive per misuratori della linea Contour Next. Confezione da 50 pezzi.',                                    17.50,  90,  'contour_strisce.png',   3, 3, FALSE),
+(10, 'Accu-Chek FastClix',         'Pungidito 1-Click con caricatore a 6 lancette preimpostate. Minimo dolore.',                                           14.20,  60,  'fastclix.png',          4, 2, FALSE),
+(11, 'FastClix Lancette 102pz',    'Caricatori da 6 lancette (17 caricatori, 102 lancette sterili) con taglio a 3 sfaccettature.',                         12.00, 120,  'fastclix_aghi.png',     4, 2, FALSE),
+(12, 'Custodia Rigida DiaTech',    'Custodia impermeabile antiurto con alloggiamenti sagomati per sensore, lettore e lancette.',                           12.90,  75,  'custodia_rigida.png',   5, 1, FALSE),
+(13, 'Patch Adesive CGM 20pz',     'Cerotti protettivi ipoallergenici resistenti ad acqua e sudore per 14 giorni.',                                        15.00, 110,  'patch_adesive.png',     5, 5, FALSE),
+(14, 'Fascia da Braccio Sport',    'Fascia regolabile traspirante per proteggere il sensore durante sport e nuoto.',                                       14.50,  50,  'fascia_braccio.png',    5, 1, FALSE);
+
+-- Compatibilita tra prodotti
+INSERT INTO prodotto_compatibile (id_prodotto_1, id_prodotto_2) VALUES
+(1, 12), -- FreeStyle Libre 2 + Custodia
+(1, 13), -- FreeStyle Libre 2 + Patch Adesive
+(1, 14), -- FreeStyle Libre 2 + Fascia Braccio
+(2, 13), -- FreeStyle Libre 3 + Patch Adesive
+(2, 14), -- FreeStyle Libre 3 + Fascia Braccio
+(3, 13), -- Dexcom G7 + Patch Adesive
+(3, 14), -- Dexcom G7 + Fascia Braccio
+(4,  7), -- Accu-Chek Guide + sue Strisce
+(4, 10), -- Accu-Chek Guide + FastClix
+(5,  8), -- GlucoMen Areo + sue Strisce
+(6,  9); -- Contour Next + sue Strisce
