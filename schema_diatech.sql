@@ -138,3 +138,16 @@ CREATE TABLE riga_ordine (
     FOREIGN KEY (id_ordine)   REFERENCES ordine(id)  ON DELETE CASCADE,
     FOREIGN KEY (id_prodotto) REFERENCES prodotto(id) ON DELETE RESTRICT
 );
+
+-- ---------------------------------------------------------
+-- TABELLA: garanzia
+-- Ogni riga d'ordine può generare una garanzia legale.
+-- Collegata 1-a-1 con riga_ordine (UNIQUE su id_riga_ordine)
+-- ---------------------------------------------------------
+CREATE TABLE garanzia (
+    id             INT AUTO_INCREMENT PRIMARY KEY,
+    id_riga_ordine INT  NOT NULL UNIQUE,
+    data_scadenza  DATE NOT NULL,
+    stato          ENUM('ATTIVA', 'SCADUTA') NOT NULL DEFAULT 'ATTIVA',
+    FOREIGN KEY (id_riga_ordine) REFERENCES riga_ordine(id) ON DELETE CASCADE
+);
