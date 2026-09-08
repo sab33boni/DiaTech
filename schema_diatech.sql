@@ -210,3 +210,26 @@ INSERT INTO prodotto_compatibile (id_prodotto_1, id_prodotto_2) VALUES
 (4, 10), -- Accu-Chek Guide + FastClix
 (5,  8), -- GlucoMen Areo + sue Strisce
 (6,  9); -- Contour Next + sue Strisce
+
+-- ---------------------------------------------------------
+-- Utenti di test
+-- Le password sono hashate con SHA-256:
+-- 'Admin123!'  -> hash sotto
+-- 'User123!'   -> hash sotto
+-- ---------------------------------------------------------
+INSERT INTO utente (id, nome, cognome, email, password_hash, indirizzo, citta, cap, telefono, ruolo) VALUES
+(1, 'Admin',  'DiaTech',  'admin@diatech.it',        '3eb3fe66b31e3b4d10fa70b5cad49c7112294af6ae4e476a1c405155d45aa121', 'Via Roma 1',    'Salerno',  '84100', '0891111111', 'ADMIN'),
+(2, 'Mario',  'Rossi',    'mario.rossi@email.it',    'fa8e65ba2d68c9e4b79ff3e1f78a9e0e73b4a157e8b0f4a3b5b2c5a0d3c1e2f4', 'Via Napoli 22', 'Napoli',   '80100', '3331234567', 'REGISTRATO'),
+(3, 'Laura',  'Bianchi',  'laura.bianchi@email.it',  'fa8e65ba2d68c9e4b79ff3e1f78a9e0e73b4a157e8b0f4a3b5b2c5a0d3c1e2f4', 'Via Milano 5',  'Milano',   '20100', '3469876543', 'REGISTRATO');
+
+-- ---------------------------------------------------------
+-- Ordini di esempio per testare lo storico e il pannello admin
+-- ---------------------------------------------------------
+INSERT INTO ordine (id, id_utente, stato, totale, indirizzo_spedizione, citta, cap, metodo_pagamento) VALUES
+(1, 2, 'CONSEGNATO', 78.80, 'Via Napoli 22', 'Napoli', '80100', 'Carta di Credito'),
+(2, 3, 'SPEDITO',    64.90, 'Via Milano 5',  'Milano', '20100', 'PayPal');
+
+INSERT INTO riga_ordine (id_ordine, id_prodotto, quantita, prezzo_unitario) VALUES
+(1, 1, 1, 59.90), -- Mario ha comprato FreeStyle Libre 2 a 59.90
+(1, 9, 1, 17.50), -- e Contour Next Strisce 50 a 17.50 (prezzo congelato)
+(2, 2, 1, 64.90); -- Laura ha comprato FreeStyle Libre 3 a 64.90
