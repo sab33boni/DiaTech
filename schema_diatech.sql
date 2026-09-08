@@ -151,3 +151,27 @@ CREATE TABLE garanzia (
     stato          ENUM('ATTIVA', 'SCADUTA') NOT NULL DEFAULT 'ATTIVA',
     FOREIGN KEY (id_riga_ordine) REFERENCES riga_ordine(id) ON DELETE CASCADE
 );
+
+-- =========================================================
+--  DATI INIZIALI
+-- =========================================================
+
+-- ---------------------------------------------------------
+-- Categorie di prodotti
+-- ---------------------------------------------------------
+INSERT INTO categoria (id, nome) VALUES
+(1, 'Sensori CGM'),
+(2, 'Glucometri'),
+(3, 'Strisce Reattive'),
+(4, 'Pungidito e Lancette'),
+(5, 'Accessori CGM');
+
+-- ---------------------------------------------------------
+-- Brand / Produttori
+-- ---------------------------------------------------------
+INSERT INTO brand (id, nome) VALUES
+(1, 'Abbott'),
+(2, 'Roche'),
+(3, 'Ascensia'),
+(4, 'Menarini'),
+(5, 'Dexcom');
