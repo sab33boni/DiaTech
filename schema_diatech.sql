@@ -102,3 +102,39 @@ CREATE TABLE riga_carrello (
     FOREIGN KEY (id_carrello) REFERENCES carrello(id) ON DELETE CASCADE,
     FOREIGN KEY (id_prodotto) REFERENCES prodotto(id)
 );
+
+-- ---------------------------------------------------------
+-- TABELLA: ordine
+-- Rappresenta un ordine completato da un cliente.
+-- Salva indirizzo e metodo di pagamento al momento dell'acquisto
+-- ---------------------------------------------------------
+CREATE TABLE ordine (
+    id                   INT AUTO_INCREMENT PRIMARY KEY,
+    id_utente            INT            NOT NULL,
+    data_ordine          TIMESTAMP      DEFAULT CURRENT_TIMESTAMP,
+    stato                ENUM('IN_LAVORAZIONE', 'SPEDITO', 'CONSEGNATO', 'ANNULLATO')
+                                        NOT NULL DEFAULT 'IN_LAVORAZIONE',
+    totale               DECIMAL(10,2)  NOT NULL CHECK (totale >= 0),
+    indirizzo_spedizione VARCHAR(255)   NOT NULL,
+    citta                VARCHAR(100)   NOT NULL,
+    cap                  VARCHAR(10)    NOT NULL,
+    metodo_pagamento     VARCHAR(50)    NOT NULL,
+    FOREIGN KEY (id_utente) REFERENCES utente(id) ON DELETE RESTRICT
+);
+
+-- ---------------------------------------------------------
+-- TABELLA: riga_ordine
+-- Ogni riga = un prodotto acquistato con la sua quantità.
+-- prezzo_unitario è il prezzo AL MOMENTO dell'acquisto:
+-- se il prezzo del prodotto cambia domani, questa riga
+-- conserva il prezzo originale pagato dal cliente (prezzo congelato)
+-- ---------------------------------------------------------
+CREATE TABLE riga_ordine (
+    id              INT AUTO_INCREMENT PRIMARY KEY,
+    id_ordine       INT            NOT NULL,
+    id_prodotto     INT            NOT NULL,
+    quantita        INT            NOT NULL CHECK (quantita > 0),
+    prezzo_unitario DECIMAL(10,2)  NOT NULL CHECK (prezzo_unitario >= 0),
+    FOREIGN KEY (id_ordine)   REFERENCES ordine(id)  ON DELETE CASCADE,
+    FOREIGN KEY (id_prodotto) REFERENCES prodotto(id) ON DELETE RESTRICT
+);
