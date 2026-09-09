@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    context.xml — Configurazione DataSource JNDI per Tomcat
+    Questo file dice a Tomcat come connettersi al database MySQL
+    e come gestire il pool di connessioni.
+    
+    Il pool evita di aprire/chiudere una connessione per ogni richiesta
+    HTTP: Tomcat mantiene un insieme di connessioni pronte e le riusa.
+-->
+<Context>
+    <Resource
+        name="jdbc/diatech"
+        auth="Container"
+        type="javax.sql.DataSource"
+        driverClassName="com.mysql.cj.jdbc.Driver"
+        url="jdbc:mysql://localhost:3306/diatech?useSSL=false&amp;serverTimezone=Europe/Rome&amp;allowPublicKeyRetrieval=true"
+        username="root"
+        password="root"
+        maxTotal="20"
+        maxIdle="10"
+        maxWaitMillis="10000"
+    />
+</Context>
