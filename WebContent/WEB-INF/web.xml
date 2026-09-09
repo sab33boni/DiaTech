@@ -7,4 +7,24 @@
     <display-name>DiaTech Solutions</display-name>
     <description>E-commerce per dispositivi medici per la gestione del diabete</description>
 
+    <!-- ============================================================
+         PAGINA DI BENVENUTO
+         Quando si accede alla root del sito, Tomcat reindirizza qui
+         ============================================================ -->
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+    <!-- ============================================================
+         RIFERIMENTO ALLA RISORSA JNDI (DataSource)
+         Dichiara che questa webapp usa il DataSource "jdbc/diatech"
+         configurato in context.xml. Obbligatorio per il lookup JNDI.
+         ============================================================ -->
+    <resource-ref>
+        <description>Connessione al database MySQL DiaTech</description>
+        <res-ref-name>jdbc/diatech</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+    </resource-ref>
+
 </web-app>
