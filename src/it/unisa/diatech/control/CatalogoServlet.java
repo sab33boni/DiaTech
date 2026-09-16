@@ -17,11 +17,6 @@ import java.sql.SQLException;
 import java.util.List;
 import javax.naming.NamingException;
 
-/**
- * Controller per la pagina Catalogo (/catalogo).
- * Gestisce la ricerca per parola chiave, i filtri parametrici (categoria, brand, prezzo)
- * e l'ordinamento, inoltrando i risultati a /WEB-INF/view/catalogo.jsp.
- */
 @WebServlet(name = "CatalogoServlet", urlPatterns = {"/catalogo"})
 public class CatalogoServlet extends HttpServlet {
 
@@ -39,15 +34,12 @@ public class CatalogoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         try {
-            // 1. Carica le liste per popolare i menu dei filtri nella sidebar
             List<Categoria> categorie = categoriaDAO.doRetrieveAll();
             List<Brand> brands = brandDAO.doRetrieveAll();
             request.setAttribute("categorie", categorie);
             request.setAttribute("brands", brands);
 
-            // 2. Lettura e sanificazione parametri della richiesta
             String keyword = request.getParameter("q");
             String catParam = request.getParameter("categoria");
             String brandParam = request.getParameter("brand");
@@ -62,7 +54,6 @@ public class CatalogoServlet extends HttpServlet {
 
             List<Prodotto> prodotti;
 
-            // 3. Esecuzione query di ricerca o filtraggio combinato
             if (keyword != null && !keyword.trim().isEmpty()) {
                 prodotti = prodottoDAO.doRetrieveBySearch(keyword);
             } else {
@@ -70,13 +61,11 @@ public class CatalogoServlet extends HttpServlet {
             }
 
             request.setAttribute("prodotti", prodotti);
-
-            // 4. Inoltro alla vista JSP
             request.getRequestDispatcher("/WEB-INF/view/catalogo.jsp").forward(request, response);
 
         } catch (SQLException | NamingException e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore durante il caricamento del catalogo.");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore catalogo");
         }
     }
 

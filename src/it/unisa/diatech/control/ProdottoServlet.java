@@ -13,11 +13,6 @@ import java.sql.SQLException;
 import java.util.List;
 import javax.naming.NamingException;
 
-/**
- * Controller per la Scheda di Dettaglio Prodotto (/prodotto?id=X).
- * Recupera le informazioni complete del dispositivo medico e l'elenco
- * dei prodotti compatibili/accessori, inoltrando a /WEB-INF/view/dettaglio-prodotto.jsp.
- */
 @WebServlet(name = "ProdottoServlet", urlPatterns = {"/prodotto"})
 public class ProdottoServlet extends HttpServlet {
 
@@ -43,9 +38,7 @@ public class ProdottoServlet extends HttpServlet {
             int id = Integer.parseInt(idParam.trim());
             Prodotto prodotto = prodottoDAO.doRetrieveByKey(id);
 
-            // Se il prodotto non esiste o è stato cancellato logicamente, mostra la vista con avviso
             if (prodotto != null && !prodotto.isCancellato()) {
-                // Recupera gli accessori e i dispositivi compatibili (relazione molti-a-molti)
                 List<Prodotto> compatibili = prodottoDAO.doRetrieveCompatibili(id);
                 request.setAttribute("prodotto", prodotto);
                 request.setAttribute("prodottiCompatibili", compatibili);
@@ -59,7 +52,7 @@ public class ProdottoServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/catalogo");
         } catch (SQLException | NamingException e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore nel caricamento del dettaglio prodotto.");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore dettaglio prodotto");
         }
     }
 
