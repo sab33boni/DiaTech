@@ -1,24 +1,13 @@
 package it.unisa.diatech.model;
 
-/**
- * Bean che rappresenta una singola riga di un ordine.
- * Contiene il prodotto acquistato, la quantità e il prezzo
- * CONGELATO al momento dell'acquisto (indipendente da future
- * modifiche al prezzo del prodotto nel catalogo).
- * Corrisponde alla tabella 'riga_ordine' del database.
- */
 public class RigaOrdine {
 
     private int     id;
     private int     idOrdine;
-    private Prodotto prodotto;        // oggetto Prodotto completo
+    private Prodotto prodotto;
     private int     quantita;
-    private double  prezzoUnitario;  // prezzo CONGELATO al momento dell'acquisto
-
-    // Costruttore vuoto obbligatorio per i Bean Java
+    private double  prezzoUnitario;
     public RigaOrdine() {}
-
-    // --- Getter e Setter ---
 
     public int getId() {
         return id;
@@ -60,11 +49,7 @@ public class RigaOrdine {
         this.prezzoUnitario = prezzoUnitario;
     }
 
-    /**
-     * Calcola il subtotale della riga usando il prezzo congelato.
-     * Non usa prodotto.getPrezzo() perche' il prezzo potrebbe
-     * essere cambiato dopo l'acquisto.
-     */
+    
     public double getSubtotale() {
         return quantita * prezzoUnitario;
     }

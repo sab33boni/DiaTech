@@ -15,18 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.naming.NamingException;
 
-/**
- * DAO per la gestione della persistenza del carrello sul database
- * (tabelle 'carrello' e 'riga_carrello').
- * Consente il salvataggio e il recupero del carrello per gli utenti registrati
- * quando effettuano il login o quando navigano tra sessioni diverse.
- */
 public class CarrelloDAO {
 
-    /**
-     * Recupera il carrello salvato su DB di un utente registrato.
-     * Se l'utente non ha ancora un carrello su DB, restituisce un nuovo Carrello vuoto.
-     */
+    
     public Carrello doRetrieveByUtente(int idUtente) throws SQLException, NamingException {
         Carrello carrello = new Carrello();
         carrello.setIdUtente(idUtente);
@@ -54,18 +45,13 @@ public class CarrelloDAO {
         return carrello;
     }
 
-    /**
-     * Sincronizza/salva l'intero contenuto del carrello di sessione sul database.
-     * Cancella le vecchie righe e inserisce quelle correnti in un'unica operazione transazionale.
-     */
+    
     public synchronized void doSaveOrUpdate(int idUtente, Carrello carrello) throws SQLException, NamingException {
         Connection con = null;
 
         try {
             con = DataSourceSingleton.getInstance().getConnection();
-            con.setAutoCommit(false); // TRANSAZIONE
-
-            // 1. Assicurati che esista il record carrello per l'utente
+            con.setAutoCommit(false);
             int idCarrello = -1;
             String checkCarrelloQuery = "SELECT id FROM carrello WHERE id_utente = ?";
             try (PreparedStatement psCheck = con.prepareStatement(checkCarrelloQuery)) {
@@ -92,15 +78,11 @@ public class CarrelloDAO {
 
             carrello.setId(idCarrello);
             carrello.setIdUtente(idUtente);
-
-            // 2. Rimuovi le vecchie righe del carrello
             String deleteRigheQuery = "DELETE FROM riga_carrello WHERE id_carrello = ?";
             try (PreparedStatement psDelete = con.prepareStatement(deleteRigheQuery)) {
                 psDelete.setInt(1, idCarrello);
                 psDelete.executeUpdate();
             }
-
-            // 3. Inserisci le nuove righe attuali
             if (carrello.getRighe() != null && !carrello.getRighe().isEmpty()) {
                 String insertRigaQuery = "INSERT INTO riga_carrello (id_carrello, id_prodotto, quantita) VALUES (?, ?, ?)";
                 try (PreparedStatement psInsertRiga = con.prepareStatement(insertRigaQuery)) {
@@ -136,9 +118,7 @@ public class CarrelloDAO {
         }
     }
 
-    /**
-     * Svuota il carrello persistito su database (invocato dopo il completamento del checkout).
-     */
+    
     public synchronized void doDeleteByUtente(int idUtente) throws SQLException, NamingException {
         String query = "DELETE rc FROM riga_carrello rc "
                      + "JOIN carrello c ON rc.id_carrello = c.id "
@@ -151,10 +131,6 @@ public class CarrelloDAO {
             ps.executeUpdate();
         }
     }
-
-    // =========================================================================
-    // METODI HELPER PRIVATI
-    // =========================================================================
 
     private List<RigaCarrello> doRetrieveRigheByCarrello(int idCarrello) throws SQLException, NamingException {
         List<RigaCarrello> righe = new ArrayList<>();

@@ -1,28 +1,17 @@
 package it.unisa.diatech.model;
 
-/**
- * Bean che rappresenta la garanzia legale associata
- * a un prodotto acquistato (riga_ordine).
- * Corrisponde alla tabella 'garanzia' del database.
- */
 public class Garanzia {
 
     private int    id;
     private int    idRigaOrdine;
-    private String dataScadenza;   // data di scadenza della garanzia
-    private String stato;          // "ATTIVA" oppure "SCADUTA"
-
-    // Costruttore vuoto obbligatorio per i Bean Java
+    private String dataScadenza;
+    private String stato;
     public Garanzia() {}
-
-    // Costruttore con parametri per comodità
     public Garanzia(int idRigaOrdine, String dataScadenza) {
         this.idRigaOrdine = idRigaOrdine;
         this.dataScadenza  = dataScadenza;
         this.stato         = "ATTIVA";
     }
-
-    // --- Getter e Setter ---
 
     public int getId() {
         return id;
@@ -56,9 +45,7 @@ public class Garanzia {
         this.stato = stato;
     }
 
-    /**
-     * Restituisce true se la garanzia è ancora attiva.
-     */
+    
     public boolean isAttiva() {
         return "ATTIVA".equals(this.stato);
     }

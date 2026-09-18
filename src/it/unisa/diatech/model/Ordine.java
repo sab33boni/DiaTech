@@ -3,31 +3,21 @@ package it.unisa.diatech.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Bean che rappresenta un ordine effettuato da un cliente.
- * Contiene i dati di spedizione, il metodo di pagamento,
- * lo stato e la lista delle righe acquistate.
- * Corrisponde alla tabella 'ordine' del database.
- */
 public class Ordine {
 
     private int              id;
     private int              idUtente;
     private String           dataOrdine;
-    private String           stato;               // IN_LAVORAZIONE, SPEDITO, CONSEGNATO, ANNULLATO
+    private String           stato;
     private double           totale;
     private String           indirizzoSpedizione;
     private String           citta;
     private String           cap;
     private String           metodoPagamento;
-    private List<RigaOrdine> righe;               // prodotti acquistati
-
-    // Costruttore vuoto: inizializza la lista righe vuota
+    private List<RigaOrdine> righe;
     public Ordine() {
         this.righe = new ArrayList<>();
     }
-
-    // --- Getter e Setter ---
 
     public int getId() {
         return id;
@@ -109,9 +99,7 @@ public class Ordine {
         this.righe = righe;
     }
 
-    /**
-     * Restituisce il numero di articoli distinti nell'ordine.
-     */
+    
     public int getNumeroProdotti() {
         return righe.size();
     }

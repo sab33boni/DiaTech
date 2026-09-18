@@ -11,18 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.naming.NamingException;
 
-/**
- * DAO per la gestione degli utenti (tabella 'utente').
- * Fornisce metodi per autenticazione (Login), registrazione, verifica disponibilità
- * email per validazione AJAX, aggiornamento profilo e report clienti per l'Admin.
- */
 public class UtenteDAO {
 
     private static final String TABLE_NAME = "utente";
 
-    /**
-     * Recupera un utente dato il suo ID univoco.
-     */
+    
     public Utente doRetrieveByKey(int id) throws SQLException, NamingException {
         String query = "SELECT id, nome, cognome, email, password_hash, indirizzo, citta, cap, telefono, ruolo, data_registrazione "
                      + "FROM " + TABLE_NAME + " WHERE id = ?";
@@ -42,10 +35,7 @@ public class UtenteDAO {
         return u;
     }
 
-    /**
-     * Recupera un utente data la sua email.
-     * Utilizzato durante la fase di login o di verifica profilo.
-     */
+    
     public Utente doRetrieveByEmail(String email) throws SQLException, NamingException {
         String query = "SELECT id, nome, cognome, email, password_hash, indirizzo, citta, cap, telefono, ruolo, data_registrazione "
                      + "FROM " + TABLE_NAME + " WHERE LOWER(email) = ?";
@@ -65,9 +55,7 @@ public class UtenteDAO {
         return u;
     }
 
-    /**
-     * Verifica le credenziali per il Login (Email + Hash della Password SHA-256).
-     */
+    
     public Utente doRetrieveByEmailAndPassword(String email, String passwordHash) throws SQLException, NamingException {
         String query = "SELECT id, nome, cognome, email, password_hash, indirizzo, citta, cap, telefono, ruolo, data_registrazione "
                      + "FROM " + TABLE_NAME + " WHERE LOWER(email) = ? AND password_hash = ?";
@@ -88,10 +76,7 @@ public class UtenteDAO {
         return u;
     }
 
-    /**
-     * Controlla se un'email è già presente nel database.
-     * Utilizzato dalla servlet AJAX (CheckEmailServlet) durante la digitazione nel form di registrazione.
-     */
+    
     public boolean checkEmailExists(String email) throws SQLException, NamingException {
         String query = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE LOWER(email) = ?";
 
@@ -109,10 +94,7 @@ public class UtenteDAO {
         return false;
     }
 
-    /**
-     * Salva un nuovo utente nel database (Registrazione).
-     * Ritorna l'ID generato automaticamente da MySQL.
-     */
+    
     public synchronized int doSave(Utente utente) throws SQLException, NamingException {
         String query = "INSERT INTO " + TABLE_NAME + " (nome, cognome, email, password_hash, indirizzo, citta, cap, telefono, ruolo) "
                      + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -143,9 +125,7 @@ public class UtenteDAO {
         return generatedId;
     }
 
-    /**
-     * Aggiorna i dati anagrafici e di spedizione di un utente.
-     */
+    
     public synchronized boolean doUpdate(Utente utente) throws SQLException, NamingException {
         String query = "UPDATE " + TABLE_NAME + " SET nome = ?, cognome = ?, indirizzo = ?, citta = ?, cap = ?, telefono = ? "
                      + "WHERE id = ?";
@@ -165,10 +145,7 @@ public class UtenteDAO {
         }
     }
 
-    /**
-     * Recupera l'elenco di tutti i clienti registrati (esclusi gli admin).
-     * Utilizzato nel pannello Admin per popolare il filtro "Filtra ordini per cliente".
-     */
+    
     public List<Utente> doRetrieveAllClienti() throws SQLException, NamingException {
         List<Utente> clienti = new ArrayList<>();
         String query = "SELECT id, nome, cognome, email, password_hash, indirizzo, citta, cap, telefono, ruolo, data_registrazione "
@@ -184,10 +161,6 @@ public class UtenteDAO {
         }
         return clienti;
     }
-
-    // =========================================================================
-    // METODO HELPER DI MAPPATURA RESULTSET -> BEAN
-    // =========================================================================
 
     private Utente mapUtente(ResultSet rs) throws SQLException {
         Utente u = new Utente();

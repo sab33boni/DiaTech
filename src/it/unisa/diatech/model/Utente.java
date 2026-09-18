@@ -1,11 +1,5 @@
 package it.unisa.diatech.model;
 
-/**
- * Bean che rappresenta un utente del sito.
- * Può essere un cliente registrato (ruolo REGISTRATO)
- * oppure un amministratore (ruolo ADMIN).
- * Corrisponde alla tabella 'utente' del database.
- */
 public class Utente {
 
     private int    id;
@@ -17,13 +11,9 @@ public class Utente {
     private String citta;
     private String cap;
     private String telefono;
-    private String ruolo;           // "REGISTRATO" oppure "ADMIN"
+    private String ruolo;
     private String dataRegistrazione;
-
-    // Costruttore vuoto obbligatorio per i Bean Java
     public Utente() {}
-
-    // --- Getter e Setter ---
 
     public int getId() {
         return id;
@@ -113,18 +103,12 @@ public class Utente {
         this.dataRegistrazione = dataRegistrazione;
     }
 
-    /**
-     * Metodo di comodo: restituisce true se l'utente è amministratore.
-     * Usato nelle Servlet per controllare i permessi di accesso.
-     */
+    
     public boolean isAdmin() {
         return "ADMIN".equals(this.ruolo);
     }
 
-    /**
-     * Restituisce il nome completo (nome + cognome).
-     * Utile nelle JSP per mostrare il nome dell'utente loggato.
-     */
+    
     public String getNomeCompleto() {
         return nome + " " + cognome;
     }

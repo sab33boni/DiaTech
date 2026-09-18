@@ -13,11 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.naming.NamingException;
 
-/**
- * DAO per la gestione dei prodotti del catalogo (tabella 'prodotto').
- * Include operazioni di lettura con filtri avanzati, ricerca live AJAX,
- * compatibilità accessori, e operazioni CRUD per l'amministratore (incluso soft-delete).
- */
 public class ProdottoDAO {
 
     private static final String BASE_QUERY =
@@ -28,9 +23,7 @@ public class ProdottoDAO {
             + "JOIN categoria c ON p.id_categoria = c.id "
             + "JOIN brand b ON p.id_brand = b.id ";
 
-    /**
-     * Recupera tutti i prodotti attivi (non cancellati logicamente) per il catalogo clienti.
-     */
+    
     public List<Prodotto> doRetrieveAll(String orderBy) throws SQLException, NamingException {
         List<Prodotto> prodotti = new ArrayList<>();
         String orderClause = sanitizeOrderBy(orderBy);
@@ -47,9 +40,7 @@ public class ProdottoDAO {
         return prodotti;
     }
 
-    /**
-     * Recupera TUTTI i prodotti (inclusi quelli cancellati logicamente) per la gestione amministrativa.
-     */
+    
     public List<Prodotto> doRetrieveAllAdmin() throws SQLException, NamingException {
         List<Prodotto> prodotti = new ArrayList<>();
         String query = BASE_QUERY + "ORDER BY p.id ASC";
@@ -65,9 +56,7 @@ public class ProdottoDAO {
         return prodotti;
     }
 
-    /**
-     * Recupera un singolo prodotto per ID con Categoria e Brand valorizzati.
-     */
+    
     public Prodotto doRetrieveByKey(int id) throws SQLException, NamingException {
         String query = BASE_QUERY + "WHERE p.id = ?";
         Prodotto p = null;
@@ -86,9 +75,7 @@ public class ProdottoDAO {
         return p;
     }
 
-    /**
-     * Ricerca dinamica con filtri per categoria, brand, fascia di prezzo e ordinamento.
-     */
+    
     public List<Prodotto> doRetrieveByFiltri(Integer idCategoria, Integer idBrand, Double minPrezzo, Double maxPrezzo, String orderBy)
             throws SQLException, NamingException {
         List<Prodotto> prodotti = new ArrayList<>();
@@ -130,9 +117,7 @@ public class ProdottoDAO {
         return prodotti;
     }
 
-    /**
-     * Ricerca per parola chiave nel nome o nella descrizione (utilizzato per Live Search AJAX).
-     */
+    
     public List<Prodotto> doRetrieveBySearch(String keyword) throws SQLException, NamingException {
         List<Prodotto> prodotti = new ArrayList<>();
         String query = BASE_QUERY + "WHERE p.cancellato = FALSE AND (LOWER(p.nome) LIKE ? OR LOWER(p.descrizione) LIKE ?) ORDER BY p.nome ASC";
@@ -153,9 +138,7 @@ public class ProdottoDAO {
         return prodotti;
     }
 
-    /**
-     * Recupera i prodotti compatibili con un dato prodotto (sezione "Prodotti Compatibili").
-     */
+    
     public List<Prodotto> doRetrieveCompatibili(int idProdotto) throws SQLException, NamingException {
         List<Prodotto> compatibili = new ArrayList<>();
         String query = BASE_QUERY
@@ -176,9 +159,7 @@ public class ProdottoDAO {
         return compatibili;
     }
 
-    /**
-     * Inserisce un nuovo prodotto nel database (Area Admin).
-     */
+    
     public synchronized int doSave(Prodotto prodotto) throws SQLException, NamingException {
         String query = "INSERT INTO prodotto (nome, descrizione, prezzo, quantita_disponibile, immagine, id_categoria, id_brand, cancellato) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -208,9 +189,7 @@ public class ProdottoDAO {
         return generatedId;
     }
 
-    /**
-     * Aggiorna i dati di un prodotto esistente (Area Admin).
-     */
+    
     public synchronized boolean doUpdate(Prodotto prodotto) throws SQLException, NamingException {
         String query = "UPDATE prodotto SET nome = ?, descrizione = ?, prezzo = ?, quantita_disponibile = ?, "
                 + "immagine = ?, id_categoria = ?, id_brand = ?, cancellato = ? WHERE id = ?";
@@ -232,10 +211,7 @@ public class ProdottoDAO {
         }
     }
 
-    /**
-     * Esegue la cancellazione logica (Soft Delete) impostando cancellato = TRUE.
-     * Preserva l'integrità referenziale degli ordini passati.
-     */
+    
     public synchronized boolean doDelete(int id) throws SQLException, NamingException {
         String query = "UPDATE prodotto SET cancellato = TRUE WHERE id = ?";
 
@@ -246,10 +222,6 @@ public class ProdottoDAO {
             return ps.executeUpdate() > 0;
         }
     }
-
-    // =========================================================================
-    // METODI DI UTILITÀ INTERNI
-    // =========================================================================
 
     private Prodotto mapProdotto(ResultSet rs) throws SQLException {
         Prodotto p = new Prodotto();

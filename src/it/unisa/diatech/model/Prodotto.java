@@ -1,10 +1,5 @@
 package it.unisa.diatech.model;
 
-/**
- * Bean che rappresenta un prodotto del catalogo.
- * Corrisponde alla tabella 'prodotto' del database.
- * Contiene oggetti Categoria e Brand annidati invece dei soli id.
- */
 public class Prodotto {
 
     private int       id;
@@ -16,11 +11,7 @@ public class Prodotto {
     private Categoria categoria;
     private Brand     brand;
     private boolean   cancellato;
-
-    // Costruttore vuoto obbligatorio per i Bean Java
     public Prodotto() {}
-
-    // --- Getter e Setter ---
 
     public int getId() {
         return id;

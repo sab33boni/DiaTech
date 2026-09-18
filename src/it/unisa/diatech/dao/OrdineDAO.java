@@ -17,22 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.naming.NamingException;
 
-/**
- * DAO per la gestione degli ordini (tabelle 'ordine', 'riga_ordine', 'garanzia').
- * Gestisce il salvataggio transazionale ACID con congelamento prezzi e decremento scorte,
- * lo storico ordini per cliente e i report per l'amministratore (filtri per data e cliente).
- */
 public class OrdineDAO {
 
-    /**
-     * Salva un ordine completo in modo TRANSAZIONALE (ACID):
-     * 1. Inserisce la testata dell'ordine
-     * 2. Inserisce le righe d'ordine con il PREZZO CONGELATO
-     * 3. Decrementa la giacenza disponibile nel magazzino
-     * 4. Genera la garanzia legale di 2 anni per ogni riga
-     *
-     * In caso di errore esegue il ROLLBACK per evitare inconsistenze.
-     */
+    
     public synchronized int doSave(Ordine ordine) throws SQLException, NamingException {
         String insertOrdineQuery = "INSERT INTO ordine (id_utente, stato, totale, indirizzo_spedizione, citta, cap, metodo_pagamento) "
                                  + "VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -48,9 +35,7 @@ public class OrdineDAO {
 
         try {
             con = DataSourceSingleton.getInstance().getConnection();
-            con.setAutoCommit(false); // INIZIO TRANSAZIONE ACID
-
-            // 1. Inserimento testata ordine
+            con.setAutoCommit(false);
             try (PreparedStatement psOrdine = con.prepareStatement(insertOrdineQuery, Statement.RETURN_GENERATED_KEYS)) {
                 psOrdine.setInt(1, ordine.getIdUtente());
                 psOrdine.setString(2, ordine.getStato() != null ? ordine.getStato() : "IN_LAVORAZIONE");
@@ -71,8 +56,6 @@ public class OrdineDAO {
                     }
                 }
             }
-
-            // 2. Inserimento righe, congelamento prezzi, aggiornamento stock e garanzie
             try (PreparedStatement psRiga = con.prepareStatement(insertRigaQuery, Statement.RETURN_GENERATED_KEYS);
                  PreparedStatement psStock = con.prepareStatement(updateStockQuery);
                  PreparedStatement psGaranzia = con.prepareStatement(insertGaranziaQuery)) {
@@ -80,7 +63,6 @@ public class OrdineDAO {
                 Date dataScadenzaGaranzia = Date.valueOf(LocalDate.now().plusYears(2));
 
                 for (RigaOrdine riga : ordine.getRighe()) {
-                    // Inserisci riga con prezzo congelato
                     psRiga.setInt(1, idOrdineGenerato);
                     psRiga.setInt(2, riga.getProdotto().getId());
                     psRiga.setInt(3, riga.getQuantita());
@@ -94,8 +76,6 @@ public class OrdineDAO {
                             riga.setId(idRigaGenerata);
                         }
                     }
-
-                    // Decrementa giacenza magazzino
                     psStock.setInt(1, riga.getQuantita());
                     psStock.setInt(2, riga.getProdotto().getId());
                     psStock.setInt(3, riga.getQuantita());
@@ -104,8 +84,6 @@ public class OrdineDAO {
                     if (rowsUpdated == 0) {
                         throw new SQLException("Scorte insufficienti per il prodotto: " + riga.getProdotto().getNome());
                     }
-
-                    // Genera certificato garanzia legale
                     if (idRigaGenerata > 0) {
                         psGaranzia.setInt(1, idRigaGenerata);
                         psGaranzia.setDate(2, dataScadenzaGaranzia);
@@ -114,11 +92,11 @@ public class OrdineDAO {
                 }
             }
 
-            con.commit(); // COMMIT TRANSAZIONE
+            con.commit();
         } catch (SQLException | NamingException e) {
             if (con != null) {
                 try {
-                    con.rollback(); // ROLLBACK IN CASO DI ERRORE
+                    con.rollback();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -138,9 +116,7 @@ public class OrdineDAO {
         return idOrdineGenerato;
     }
 
-    /**
-     * Recupera un singolo ordine per ID completo delle sue righe e prodotti associati.
-     */
+    
     public Ordine doRetrieveByKey(int id) throws SQLException, NamingException {
         String query = "SELECT id, id_utente, data_ordine, stato, totale, indirizzo_spedizione, citta, cap, metodo_pagamento "
                      + "FROM ordine WHERE id = ?";
@@ -165,9 +141,7 @@ public class OrdineDAO {
         return ordine;
     }
 
-    /**
-     * Recupera lo storico degli ordini di un cliente (ordinati dal più recente).
-     */
+    
     public List<Ordine> doRetrieveByUtente(int idUtente) throws SQLException, NamingException {
         List<Ordine> ordini = new ArrayList<>();
         String query = "SELECT id, id_utente, data_ordine, stato, totale, indirizzo_spedizione, citta, cap, metodo_pagamento "
@@ -189,9 +163,7 @@ public class OrdineDAO {
         return ordini;
     }
 
-    /**
-     * Recupera tutti gli ordini con filtri per intervallo date e per cliente (Area Admin).
-     */
+    
     public List<Ordine> doRetrieveByFiltri(String startDate, String endDate, Integer idCliente) throws SQLException, NamingException {
         List<Ordine> ordini = new ArrayList<>();
         StringBuilder query = new StringBuilder("SELECT id, id_utente, data_ordine, stato, totale, indirizzo_spedizione, citta, cap, metodo_pagamento FROM ordine WHERE 1=1 ");
@@ -230,9 +202,7 @@ public class OrdineDAO {
         return ordini;
     }
 
-    /**
-     * Aggiorna lo stato di un ordine (Area Admin, es. da IN_LAVORAZIONE a SPEDITO).
-     */
+    
     public synchronized boolean doUpdateStato(int idOrdine, String nuovoStato) throws SQLException, NamingException {
         String query = "UPDATE ordine SET stato = ? WHERE id = ?";
 
@@ -245,10 +215,6 @@ public class OrdineDAO {
             return ps.executeUpdate() > 0;
         }
     }
-
-    // =========================================================================
-    // METODI DI SUPPORTO PER CARICARE LE RIGHE E I PRODOTTI
-    // =========================================================================
 
     private List<RigaOrdine> doRetrieveRigheByOrdine(int idOrdine) throws SQLException, NamingException {
         List<RigaOrdine> righe = new ArrayList<>();
@@ -274,7 +240,7 @@ public class OrdineDAO {
                     ro.setId(rs.getInt("id"));
                     ro.setIdOrdine(rs.getInt("id_ordine"));
                     ro.setQuantita(rs.getInt("quantita"));
-                    ro.setPrezzoUnitario(rs.getDouble("prezzo_unitario")); // PREZZO CONGELATO
+                    ro.setPrezzoUnitario(rs.getDouble("prezzo_unitario"));
 
                     Prodotto p = new Prodotto();
                     p.setId(rs.getInt("prod_id"));

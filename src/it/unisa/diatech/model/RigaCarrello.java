@@ -1,27 +1,16 @@
 package it.unisa.diatech.model;
 
-/**
- * Bean che rappresenta una singola riga del carrello.
- * Ogni riga contiene un prodotto e la quantità scelta.
- * Corrisponde alla tabella 'riga_carrello' del database.
- */
 public class RigaCarrello {
 
     private int     id;
     private int     idCarrello;
-    private Prodotto prodotto;   // oggetto Prodotto completo (non solo l'id)
+    private Prodotto prodotto;
     private int     quantita;
-
-    // Costruttore vuoto obbligatorio per i Bean Java
     public RigaCarrello() {}
-
-    // Costruttore con parametri per comodità
     public RigaCarrello(Prodotto prodotto, int quantita) {
         this.prodotto = prodotto;
         this.quantita = quantita;
     }
-
-    // --- Getter e Setter ---
 
     public int getId() {
         return id;
@@ -55,11 +44,7 @@ public class RigaCarrello {
         this.quantita = quantita;
     }
 
-    /**
-     * Calcola il subtotale di questa riga:
-     * quantita x prezzo del prodotto.
-     * Usato nelle JSP per mostrare il costo parziale.
-     */
+    
     public double getSubtotale() {
         return quantita * prodotto.getPrezzo();
     }
