@@ -15,7 +15,7 @@
         </div>
 
         <c:choose>
-            <c:when test="${not empty sessionScope.carrello && !sessionScope.carrello.empty}">
+            <c:when test="${not empty sessionScope.carrello && not empty sessionScope.carrello.righe}">
                 <div class="cart-layout">
 
                     <!-- COLONNA SINISTRA: TABELLA DEGLI ARTICOLI -->
@@ -163,9 +163,7 @@
 
                 </div>
             </c:when>
-
-            <!-- STATO CARRELLO VUOTO -->
-            <c:otherwise>
+<c:otherwise>
                 <div class="empty-cart-box">
                     <div class="empty-cart-icon">🛒</div>
                     <h2>Il tuo carrello è attualmente vuoto</h2>

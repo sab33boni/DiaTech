@@ -109,9 +109,7 @@
                     </c:forEach>
                 </div>
             </c:when>
-
-            <!-- NESSUN ORDINE EFFETTUATO -->
-            <c:otherwise>
+<c:otherwise>
                 <div class="no-orders-box">
                     <div class="no-orders-icon">📦</div>
                     <h2>Nessun ordine effettuato finora</h2>
